@@ -99,7 +99,7 @@ fi
 
 #-----------------------------------------------------
 #-----------------------------------------------------
-if [ $machine = WCOSS -o $machine = WCOSS_C -o $machine = WCOSS_DELL_P3 -o $machine = HERA -o $machine = ORION ]; then
+if [ $machine = WCOSS -o $machine = WCOSS_C -o $machine = WCOSS_DELL_P3 -o $machine = HERA -o $machine = ORION -o $machine = S4 ]; then
 #-----------------------------------------------------
 #-----------------------------------------------------
 export nset=1
