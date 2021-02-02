@@ -1,40 +1,41 @@
-       SUBROUTINE INITPOST_GFS_NETCDF_PARA(ncid3d)
-
-!$$$  SUBPROGRAM DOCUMENTATION BLOCK
+!> @file
 !                .      .    .     
-! SUBPROGRAM:    INITPOST_GFS_NETCDF_PARA  INITIALIZE POST FOR RUN
-!   PRGRMMR: Wen Meng    DATE: 2020-02-04
-!     
-! ABSTRACT:  THIS ROUTINE INITIALIZES CONSTANTS AND
-!   VARIABLES AT THE START OF GFS MODEL OR POST 
-!   PROCESSOR RUN.
-!
-! REVISION HISTORY
-!   2020-02-04 W Meng   start from INITPOST_GFS_NETCDF.f 
-!
-! USAGE:    CALL INITPOST_GFS_NETCDF_PARA
-!   INPUT ARGUMENT LIST:
-!     NONE     
-!
-!   OUTPUT ARGUMENT LIST: 
-!     NONE
-!     
-!   OUTPUT FILES:
-!     NONE
-!     
-!   SUBPROGRAMS CALLED:
-!     UTILITIES:
-!       NONE
-!     LIBRARY:
-!       COMMON   - CTLBLK
-!                  LOOKUP
-!                  SOILDEPTH
-!
-!    
-!   ATTRIBUTES:
-!     LANGUAGE: FORTRAN
-!     MACHINE : CRAY C-90
-!$$$  
+!> SUBPROGRAM:    INITPOST_GFS_NETCDF_PARA  INITIALIZE POST FOR RUN
+!!   PRGRMMR: Wen Meng    DATE: 2020-02-04
+!!     
+!! ABSTRACT:  THIS ROUTINE INITIALIZES CONSTANTS AND
+!!   VARIABLES AT THE START OF GFS MODEL OR POST 
+!!   PROCESSOR RUN.
+!!
+!! REVISION HISTORY
+!!   2020-02-04 W Meng   start from INITPOST_GFS_NETCDF.f 
+!!
+!! USAGE:    CALL INITPOST_GFS_NETCDF_PARA
+!!   INPUT ARGUMENT LIST:
+!!     NONE     
+!!
+!!   OUTPUT ARGUMENT LIST: 
+!!     NONE
+!!     
+!!   OUTPUT FILES:
+!!     NONE
+!!     
+!!   SUBPROGRAMS CALLED:
+!!     UTILITIES:
+!!       NONE
+!!     LIBRARY:
+!!       COMMON   - CTLBLK
+!!                  LOOKUP
+!!                  SOILDEPTH
+!!
+!!    
+!!   ATTRIBUTES:
+!!     LANGUAGE: FORTRAN
+!!     MACHINE : CRAY C-90
+!!
+      SUBROUTINE INITPOST_GFS_NETCDF_PARA(ncid3d)
+
+
       use netcdf
       use vrbls4d, only: dust, SALT, SUSO, SOOT, WASO, PP25, PP10 
       use vrbls3d, only: t, q, uh, vh, pmid, pint, alpint, dpres, zint, zmid, o3,               &
@@ -80,6 +81,7 @@
               dxval, dyval, truelat2, truelat1, psmapf, cenlat,lonstartv, lonlastv, cenlonv,    &
               latstartv, latlastv, cenlatv,latstart_r,latlast_r,lonstart_r,lonlast_r
       use rqstfld_mod,  only: igds, avbl, iq, is
+      use upp_physics, only: fpvsnew
 !- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
       implicit none
 !
@@ -103,7 +105,6 @@
 !     real,parameter:: con_eps     =con_rd/con_rv
 !     real,parameter:: con_epsm1   =con_rd/con_rv-1
 !
-!     real,external::FPVSNEW
 ! This version of INITPOST shows how to initialize, open, read from, and
 ! close a NetCDF dataset. In order to change it to read an internal (binary)
 ! dataset, do a global replacement of _ncd_ with _int_. 
@@ -148,7 +149,6 @@
       integer ncid3d,ncid2d,varid,nhcas
       real    TSTART,TLMH,TSPH,ES,FACT,soilayert,soilayerb,zhour,dum,  &
               tvll,pmll,tv, tx1, tx2
-      real, external :: fpvsnew
 
       character*20,allocatable :: recname(:)
       integer,     allocatable :: reclev(:), kmsk(:,:)
@@ -486,7 +486,7 @@
         end if
 
 ! Jili Dong add support for regular lat lon (2019/03/22) start
-       if (MAPTYPE .eq. 0) then
+       if (MAPTYPE == 0) then
         if(lonstart<0.)then
          lonstart=lonstart+360.*gdsdegr
         end if
