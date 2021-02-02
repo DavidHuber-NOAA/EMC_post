@@ -25,6 +25,7 @@ echo " Feb 18 - Meng - Removed legacy setting for generating grib1 data"
 echo "                 and reading sigio model outputs."
 echo " Aug 20 - Meng - Remove .ecf extentsion per EE2 review."
 echo " Sep 20 - Meng - Update clean up files per EE2 review."
+echo " Dec 20 - Meng - Add alert for special data file."
 echo "-----------------------------------------------------"
 #####################################################################
 
@@ -216,10 +217,10 @@ then
          cp ${PGBOUT}.tmp $COMOUT/${PREFIX}wafs.0p25.anl
          $WGRIB2 -s ${PGBOUT}.tmp > $COMOUT/${PREFIX}wafs.0p25.anl.idx
 
-         if [ $SENDDBN = YES ]; then
-            $DBNROOT/bin/dbn_alert MODEL GFS_WAFS_GB2 $job $COMOUT/${PREFIX}wafs.0p25.anl
-            $DBNROOT/bin/dbn_alert MODEL GFS_WAFS_GB2__WIDX $job $COMOUT/${PREFIX}wafs.0p25.anl.idx
-         fi
+#         if [ $SENDDBN = YES ]; then
+#            $DBNROOT/bin/dbn_alert MODEL GFS_WAFS_GB2 $job $COMOUT/${PREFIX}wafs.0p25.anl
+#            $DBNROOT/bin/dbn_alert MODEL GFS_WAFS_GB2__WIDX $job $COMOUT/${PREFIX}wafs.0p25.anl.idx
+#         fi
       fi
       rm $PGBOUT ${PGBOUT}.tmp
    fi
@@ -486,6 +487,10 @@ do
 
        mv goesfile $COMOUT/${SPECIALFL}f$fhr
        mv goesifile $COMOUT/${SPECIALFLIDX}f$fhr
+
+       if [ $SENDDBN = YES ]; then
+           $DBNROOT/bin/dbn_alert MODEL GFS_SPECIAL_GB2 $job $COMOUT/${SPECIALFL}f$fhr
+       fi
 
     fi
     fi
